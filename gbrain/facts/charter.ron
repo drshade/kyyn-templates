@@ -1,0 +1,10 @@
+(
+    purpose: "A gbrain-style operational knowledge brain: a continuously-enriched, interlinked wiki of the people, organisations, artifacts, events, and ideas in the owner's world.",
+    objectives: [
+        "Every real-world entity has exactly one canonical page, deduplicated by slug and aliases — no split-brain duplicates.",
+        "Each page keeps a current compiled-truth synthesis above the line over an append-only, sourced timeline below it.",
+        "Relationships between pages are captured as typed edges, so the brain is a queryable graph rather than a pile of notes.",
+        "Claims carry provenance as takes (fact / take / bet / hunch); contradictions are recorded side by side, not silently overwritten.",
+    ],
+    notes: "**Structure.** The type system is the *gbrain-base-v2* schema pack mapped onto kyyn kinds: five primitive kinds — `entity` (person/company), `media` (media/tweet/analysis/source/writing), `temporal` (social-digest/deal/email/slack/event/diary), `annotation` (atom), `concept` (concept/project/note) — plus `relationship` (typed edges over the 14 gbrain link verbs) and `take` (structured claims). Every page carries a `compiled` truth section and an append-only `timeline`.\n\n**Not modelled:** the alias query-closure graph over legacy type names, gbrain's v1→v2 `mapping_rules` migration engine, and the Postgres chunk/embedding/hybrid-search layer — runtime concerns that live outside the type system.\n\n**Make this your own.** Replace this purpose and these objectives with your world's — this charter ships as a starting point, not a straitjacket.",
+)

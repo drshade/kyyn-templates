@@ -1,0 +1,68 @@
+(
+    schema_hash: "fb0b2535a9dcbf4ae5d9c4809975e996538655fb9c30090a589a533300b73476",
+    kinds: [
+        (
+            name: "charter",
+            doc: "The KB's charter — WHY this knowledge base exists. One record, written
+early and kept current: every curation judgement should be defensible
+against it. When the KB's purpose shifts, propose a charter update in the
+same breath as the work that shifts it.",
+            storage: "facts/charter.ron",
+            fields: [
+                (
+                    name: "purpose",
+                    doc: "One-line statement of what this KB is for.",
+                    ty: Str,
+                    role: Some("title"),
+                ),
+                (
+                    name: "objectives",
+                    doc: r#"The concrete objectives — what "done" looks like, each independently
+checkable. Keep them few and honest."#,
+                    ty: List(Markdown),
+                ),
+                (
+                    name: "notes",
+                    doc: "Scope, period under review, ground rules, exclusions (Markdown prose).",
+                    ty: Markdown,
+                ),
+            ],
+        ),
+        (
+            name: "self",
+            doc: "The owner's own context (`kb.self`) — who this knowledge base serves.",
+            storage: "facts/self.ron",
+            fields: [
+                (
+                    name: "name",
+                    doc: "",
+                    ty: Str,
+                    role: Some("title"),
+                ),
+                (
+                    name: "role",
+                    doc: "",
+                    ty: Str,
+                ),
+                (
+                    name: "notes",
+                    doc: "Distilled, always-current freeform context (Markdown prose) — a
+snapshot, not a log.",
+                    ty: Markdown,
+                ),
+            ],
+        ),
+    ],
+    roles: [
+        (
+            name: "title",
+            doc: "Names the record — lists, links, briefs.",
+            binds: Title,
+        ),
+        (
+            name: "date",
+            doc: "Places the record on the KB's timeline — sorting, recency.",
+            binds: Timeline,
+        ),
+    ],
+)

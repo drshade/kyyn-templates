@@ -1,0 +1,13 @@
+// A kyyn KB template (ADR 0007): a VALID, runnable KB whose identity values
+// are canonical dummy literals, swapped for real ones at
+// `kyyn init --template blank`. Every dummy is declared below — nothing
+// else in the tree is parameterized.
+(
+    template: 1,
+    name: "blank",
+    summary: "The minimal governed KB: a charter and the owner's own record.",
+    substitutions: [
+        (key: "owner_name", doc: "The owner's display name.", dummy: "Template Owner", files: ["facts/self.ron"]),
+        (key: "owner_role", doc: "The owner's role, one line.", dummy: "Template Role", files: ["facts/self.ron"]),
+    ],
+)

@@ -1,0 +1,9 @@
+// A kyyn KB template (ADR 0007). gbrain carries no identity values at all —
+// its charter ships as a starting point ("Make this your own") and the
+// declared git-repo source points at the public gbrain spec repository.
+(
+    template: 1,
+    name: "gbrain",
+    summary: "A gbrain-style operational knowledge brain: entity/media/temporal/annotation/concept pages, typed relationship edges, and takes with provenance.",
+    substitutions: [],
+)
