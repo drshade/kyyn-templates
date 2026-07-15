@@ -1,6 +1,6 @@
 (
     taps: [
-        (name: "first-party", repo: Some("ssh://git@github.com/drshade/kyyn-plugins"), rev: Some("5f4e4dc15a730bf44faaaf258c1f96317d15f090")),
+        (name: "first-party", repo: Some("ssh://git@github.com/drshade/kyyn-plugins"), rev: Some("0fc73136a3aa362c8f8d3e234759a6d125900f9b")),
     ],
     sources: [],
 )
