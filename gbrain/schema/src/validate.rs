@@ -69,8 +69,11 @@ mod tests {
         assert!(v.is_empty(), "expected clean, got: {v:?}");
     }
 
-    /// Link policy is wired in: `relationship` endpoints allow only page
-    /// kinds, so a `todo:` link (that kind is gone) is a hard Error.
+    /// Link policy is wired in: `relationship` endpoints allow only PAGE
+    /// kinds, so a link to a real-but-non-page kind (`take:`) is a hard
+    /// Error. (A link to a kind that does not exist at all — the old
+    /// `todo:` this test once used — is merely "unrecognized", a Warning:
+    /// policy can only judge kinds the registry knows.)
     #[test]
     fn a_disallowed_link_kind_is_an_error() {
         let entries = vec![
@@ -80,13 +83,13 @@ mod tests {
             ),
             entry(
                 "facts/relationships/bad.ron",
-                r#"(id: "bad", title: "Bad", from: "todo:nope", to: "entity:acme", verb: WorksAt)"#,
+                r#"(id: "bad", title: "Bad", from: "take:nope", to: "entity:acme", verb: WorksAt)"#,
             ),
         ];
         let v = validate_entries(&entries);
         assert!(
             v.iter()
-                .any(|x| x.severity == Severity::Error && x.message.contains("todo")),
+                .any(|x| x.severity == Severity::Error && x.message.contains("take")),
             "a disallowed link kind should Error: {v:?}"
         );
     }

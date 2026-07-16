@@ -1,0 +1,19 @@
+# Every template is a valid KB fragment: schema tests + registry freshness
+# per directory (ADR 0007's deferred CI, instituted by ADR 0010).
+name: check
+on:
+  pull_request:
+  push:
+    branches: [main]
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: |
+            blank/schema
+            gbrain/schema
+      - run: ./scripts/check-templates.sh
