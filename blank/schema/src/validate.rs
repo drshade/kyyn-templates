@@ -26,8 +26,7 @@ pub fn validate_entries(entries: &[(String, String)]) -> Vec<Violation> {
 /// Validate against an explicit declared-system set (what the engine calls
 /// through the protocol; `validate_entries` is the DEFAULT_SYSTEMS shorthand).
 pub fn validate_entries_with(entries: &[(String, String)], systems: &[&str]) -> Vec<Violation> {
-    let registry = crate::registry::registry();
-    kyyn_core::validate::against_registry(&registry, entries, systems)
+    crate::registry::validate_entries_with(entries, systems)
 }
 
 #[cfg(test)]
