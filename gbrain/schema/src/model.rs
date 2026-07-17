@@ -15,7 +15,6 @@
 //! (`[system:]kind:id` strings on disk — see `link.rs`).
 
 use chrono::NaiveDate;
-use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
 
 use kyyn_core::link::Link;
@@ -24,16 +23,20 @@ use kyyn_core::link::Link;
 /// early and kept current: every curation judgement should be defensible
 /// against it. When the KB's purpose shifts, propose a charter update in the
 /// same breath as the work that shifts it.
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, JsonSchema)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, kyyn_core::KyynKind)]
+#[kyyn(kind = "charter", storage = "facts/charter.ron")]
 pub struct Charter {
     /// One-line statement of what this KB is for.
+    #[kyyn(role = "title")]
     pub purpose: String,
     /// The concrete objectives — what "done" looks like, each independently
     /// checkable. Keep them few and honest.
     #[serde(default)]
+    #[kyyn(markdown)]
     pub objectives: Vec<String>,
     /// Scope, period under review, ground rules, exclusions (Markdown prose).
     #[serde(default)]
+    #[kyyn(markdown)]
     pub notes: String,
 }
 
@@ -60,16 +63,17 @@ pub struct Charter {
 
 /// One dated entry in a page's append-only timeline — the below-the-line
 /// evidence log gbrain generates from its event ledger, here a nested record.
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, JsonSchema)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, kyyn_core::KyynType)]
 pub struct TimelineEntry {
     /// When it happened.
     pub time: NaiveDate,
     /// What happened — a dated, sourced note (Markdown prose).
+    #[kyyn(markdown)]
     pub entry: String,
 }
 
 /// The page types on the **entity** primitive — the actors in the graph.
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, JsonSchema)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, kyyn_core::KyynType)]
 pub enum EntityType {
     Person,
     Company,
@@ -79,12 +83,14 @@ pub enum EntityType {
 /// `location`, `role`). The most enriched page type: an entity page is a
 /// briefing, not a contact card. Typed edges to other pages live on
 /// [`Relationship`]; claims about it live on [`Take`].
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, JsonSchema)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, kyyn_core::KyynKind)]
+#[kyyn(kind = "entity", storage = "facts/entities/{id}.ron")]
 pub struct Entity {
     /// Canonical slug — the stable identity (`jane-doe`, `acme`); matches the
     /// filename. Disambiguate collisions (`david-liu-meta`).
     pub id: String,
     /// Display name.
+    #[kyyn(role = "title")]
     pub title: String,
     /// Which entity page type this is.
     pub r#type: EntityType,
@@ -109,6 +115,7 @@ pub struct Entity {
     /// Compiled truth — the always-current synthesis, rewritten when evidence
     /// changes. Read only this and you know the state of play.
     #[serde(default)]
+    #[kyyn(markdown)]
     pub compiled: String,
     /// Timeline — append-only, dated evidence entries; never rewritten.
     #[serde(default)]
@@ -116,7 +123,7 @@ pub struct Entity {
 }
 
 /// The page types on the **media** primitive — the artifacts.
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, JsonSchema)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, kyyn_core::KyynType)]
 pub enum MediaType {
     Media,
     Tweet,
@@ -127,11 +134,13 @@ pub enum MediaType {
 
 /// An artifact — an article, video, tweet, essay, source document, or analysis
 /// (the **media** primitive: `url`, `source`, `author`, `date`).
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, JsonSchema)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, kyyn_core::KyynKind)]
+#[kyyn(kind = "media", storage = "facts/media/{id}.ron")]
 pub struct Media {
     /// Canonical slug; matches the filename.
     pub id: String,
     /// Display title.
+    #[kyyn(role = "title")]
     pub title: String,
     /// Which media page type this is.
     pub r#type: MediaType,
@@ -150,9 +159,11 @@ pub struct Media {
     pub author: Option<String>,
     /// Publication/creation date.
     #[serde(default)]
+    #[kyyn(role = "date")]
     pub date: Option<NaiveDate>,
     /// Compiled truth — the always-current synthesis.
     #[serde(default)]
+    #[kyyn(markdown)]
     pub compiled: String,
     /// Timeline — append-only, dated evidence entries; never rewritten.
     #[serde(default)]
@@ -160,7 +171,7 @@ pub struct Media {
 }
 
 /// The page types on the **temporal** primitive — dated events and exchanges.
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, JsonSchema)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, kyyn_core::KyynType)]
 pub enum TemporalType {
     SocialDigest,
     Deal,
@@ -173,11 +184,13 @@ pub enum TemporalType {
 /// A dated event or exchange — a deal, email, Slack thread, calendar event,
 /// diary entry, or social digest (the **temporal** primitive: `date`,
 /// `attendees`, `duration`, `location`).
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, JsonSchema)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, kyyn_core::KyynKind)]
+#[kyyn(kind = "temporal", storage = "facts/temporal/{id}.ron")]
 pub struct Temporal {
     /// Canonical slug; matches the filename.
     pub id: String,
     /// Display title.
+    #[kyyn(role = "title")]
     pub title: String,
     /// Which temporal page type this is.
     pub r#type: TemporalType,
@@ -186,9 +199,11 @@ pub struct Temporal {
     pub subtype: Option<String>,
     /// When it happened.
     #[serde(default)]
+    #[kyyn(role = "date")]
     pub date: Option<NaiveDate>,
     /// Entities present or involved — typed links to `entity` pages.
     #[serde(default)]
+    #[kyyn(link(allowed = ["entity"]))]
     pub attendees: Vec<Link>,
     /// How long it ran (free-form, e.g. `45m`).
     #[serde(default)]
@@ -198,6 +213,7 @@ pub struct Temporal {
     pub location: Option<String>,
     /// Compiled truth — your analysis, not a transcript dump.
     #[serde(default)]
+    #[kyyn(markdown)]
     pub compiled: String,
     /// Timeline — append-only, dated evidence entries; never rewritten.
     #[serde(default)]
@@ -205,18 +221,20 @@ pub struct Temporal {
 }
 
 /// The page types on the **annotation** primitive.
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, JsonSchema)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, kyyn_core::KyynType)]
 pub enum AnnotationType {
     Atom,
 }
 
 /// An atom — a small, provenance-bearing unit of extracted knowledge (the
 /// **annotation** primitive: `confidence`, `valid_from`, `source`).
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, JsonSchema)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, kyyn_core::KyynKind)]
+#[kyyn(kind = "annotation", storage = "facts/atoms/{id}.ron")]
 pub struct Annotation {
     /// Canonical slug; matches the filename.
     pub id: String,
     /// Display title.
+    #[kyyn(role = "title")]
     pub title: String,
     /// Which annotation page type this is.
     pub r#type: AnnotationType,
@@ -229,12 +247,14 @@ pub struct Annotation {
     pub confidence: Option<String>,
     /// When the claim started being true.
     #[serde(default)]
+    #[kyyn(role = "date")]
     pub valid_from: Option<NaiveDate>,
     /// Where the atom came from.
     #[serde(default)]
     pub source: Option<String>,
     /// Compiled truth — the always-current synthesis.
     #[serde(default)]
+    #[kyyn(markdown)]
     pub compiled: String,
     /// Timeline — append-only, dated evidence entries; never rewritten.
     #[serde(default)]
@@ -242,7 +262,7 @@ pub struct Annotation {
 }
 
 /// The page types on the **concept** primitive — ideas and workstreams.
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, JsonSchema)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, kyyn_core::KyynType)]
 pub enum ConceptType {
     Concept,
     Project,
@@ -252,11 +272,13 @@ pub enum ConceptType {
 /// A concept, project, or note (the **concept** primitive: `tags`). Concept =
 /// a framework you could teach; project = something being actively built;
 /// note = the catch-all for anything not otherwise typed.
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, JsonSchema)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, kyyn_core::KyynKind)]
+#[kyyn(kind = "concept", storage = "facts/concepts/{id}.ron")]
 pub struct Concept {
     /// Canonical slug; matches the filename.
     pub id: String,
     /// Display title.
+    #[kyyn(role = "title")]
     pub title: String,
     /// Which concept page type this is.
     pub r#type: ConceptType,
@@ -268,6 +290,7 @@ pub struct Concept {
     pub tags: Vec<String>,
     /// Compiled truth — the always-current synthesis.
     #[serde(default)]
+    #[kyyn(markdown)]
     pub compiled: String,
     /// Timeline — append-only, dated evidence entries; never rewritten.
     #[serde(default)]
@@ -276,7 +299,7 @@ pub struct Concept {
 
 /// The 14 typed link verbs of gbrain-base-v2, forward direction. Inverses
 /// (`employs`, `founded_by`, `attended_by`, …) are derived on read, not stored.
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, JsonSchema)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, kyyn_core::KyynType)]
 pub enum LinkVerb {
     PartnerOf,
     RelatesTo,
@@ -294,28 +317,37 @@ pub enum LinkVerb {
     AttributedTo,
 }
 
+/// Page kinds accepted by graph-edge and take-subject links. One shared
+/// constant feeds every derived link policy.
+pub const PAGE_KINDS: &[&str] = &["entity", "media", "temporal", "annotation", "concept"];
+
 /// A typed edge between two pages — gbrain's link graph as first-class records.
 /// A kyyn `Link` carries no verb, so the edge itself is a kind: it names the
 /// two endpoints and the [`LinkVerb`] between them.
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, JsonSchema)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, kyyn_core::KyynKind)]
+#[kyyn(kind = "relationship", storage = "facts/relationships/{id}.ron")]
 pub struct Relationship {
     /// Canonical slug; matches the filename (e.g. `jane-doe-works-at-acme`).
     pub id: String,
     /// Human-readable label, e.g. "Jane Doe works_at Acme".
+    #[kyyn(role = "title")]
     pub title: String,
     /// Source page of the edge.
+    #[kyyn(link(allowed = PAGE_KINDS))]
     pub from: Link,
     /// Target page of the edge.
+    #[kyyn(link(allowed = PAGE_KINDS))]
     pub to: Link,
     /// The relationship verb.
     pub verb: LinkVerb,
     /// Why this edge exists / supporting context (Markdown prose).
     #[serde(default)]
+    #[kyyn(markdown)]
     pub context: String,
 }
 
 /// The kind of a structured claim — gbrain's `takes_kinds`.
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, JsonSchema)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, kyyn_core::KyynType)]
 pub enum TakeKind {
     /// An established, verifiable fact.
     Fact,
@@ -330,24 +362,29 @@ pub enum TakeKind {
 /// A structured claim about a page — gbrain's "takes" (fact / take / bet /
 /// hunch), with provenance. Contradictions become data, not bugs: two takes on
 /// the same subject with different values sit side by side.
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, JsonSchema)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, kyyn_core::KyynKind)]
+#[kyyn(kind = "take", storage = "facts/takes/{id}.ron")]
 pub struct Take {
     /// Canonical slug; matches the filename.
     pub id: String,
     /// Short label for the claim.
+    #[kyyn(role = "title")]
     pub title: String,
     /// The page this claim is about.
+    #[kyyn(link(allowed = PAGE_KINDS))]
     pub subject: Link,
     /// What sort of claim this is.
     pub kind: TakeKind,
     /// The claim itself (Markdown prose).
     #[serde(default)]
+    #[kyyn(markdown)]
     pub claim: String,
     /// Confidence — `high`/`medium`/`low` or a note.
     #[serde(default)]
     pub confidence: Option<String>,
     /// When the claim started being true.
     #[serde(default)]
+    #[kyyn(role = "date")]
     pub valid_from: Option<NaiveDate>,
     /// Where the claim came from.
     #[serde(default)]

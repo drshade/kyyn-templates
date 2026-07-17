@@ -8,18 +8,19 @@ name = "schema"
 path = "src/main.rs"
 
 [lib]
-name = "schema_starter"
+name = "gbrain_schema"
 path = "src/lib.rs"
 
 [dependencies]
-kyyn-core = "0.1.11"
+kyyn-core = "0.1.15"
 serde = { version = "1", features = ["derive"] }
 ron = "0.12"
 chrono = { version = "0.4", features = ["serde"] }
-schemars = { version = "1", features = ["chrono04"] }
-serde_json = "1"
 
 [build-dependencies]
+sha2 = "0.10"
+
+[dev-dependencies]
 sha2 = "0.10"
 
 [workspace]
