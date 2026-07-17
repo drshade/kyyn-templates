@@ -33,20 +33,20 @@ mod tests {
     use super::*;
     use sha2::{Digest, Sha256};
 
-    /// Fingerprint of the handwritten pre-macro Registry with only
-    /// `schema_hash` cleared. Any structural or documentation drift requires
-    /// explicit review rather than disappearing into generated output.
-    const PRE_MACRO_REGISTRY_SHA256: &str =
+    /// Fingerprint of the reviewed Registry projection with only `schema_hash`
+    /// cleared. Intentional schema evolution updates this only after reviewing
+    /// the generated Registry diff.
+    const REVIEWED_REGISTRY_SHA256: &str =
         "dcaf548185901a9a0e7ea7169f87fecf37c4033995337e9b88976186219b0d9b";
 
     #[test]
-    fn generated_registry_matches_the_handwritten_pre_macro_projection() {
+    fn generated_registry_matches_the_reviewed_projection() {
         let mut generated = registry();
         generated.schema_hash.clear();
         let canonical = kyyn_core::ronfmt::to_ron(&generated).unwrap();
         assert_eq!(
             format!("{:x}", Sha256::digest(canonical.as_bytes())),
-            PRE_MACRO_REGISTRY_SHA256
+            REVIEWED_REGISTRY_SHA256
         );
     }
 
