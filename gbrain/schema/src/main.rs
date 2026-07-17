@@ -8,7 +8,5 @@ fn main() {
 }
 
 pub fn main_impl() {
-    kyyn_core::protocol::serve_schema(schema_starter::registry::registry, |entries, systems| {
-        schema_starter::validate::validate_entries_with(entries, systems)
-    });
+    gbrain_schema::registry::serve();
 }

@@ -14,17 +14,19 @@
 //! exact `YYYY-MM-DD` strings on disk); references are the universal
 //! `kyyn_core::link::Link` type (`[system:]kind:id` strings on disk).
 
-use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
 
 /// The owner's own context (`kb.self`) — who this knowledge base serves.
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, JsonSchema)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, kyyn_core::KyynKind)]
+#[kyyn(kind = "self", storage = "facts/self.ron")]
 pub struct SelfContext {
+    #[kyyn(role = "title")]
     pub name: String,
     pub role: String,
     /// Distilled, always-current freeform context (Markdown prose) — a
     /// snapshot, not a log.
     #[serde(default)]
+    #[kyyn(markdown)]
     pub notes: String,
 }
 
@@ -32,16 +34,20 @@ pub struct SelfContext {
 /// early and kept current: every curation judgement should be defensible
 /// against it. When the KB's purpose shifts, propose a charter update in the
 /// same breath as the work that shifts it.
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, JsonSchema)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, kyyn_core::KyynKind)]
+#[kyyn(kind = "charter", storage = "facts/charter.ron")]
 pub struct Charter {
     /// One-line statement of what this KB is for.
+    #[kyyn(role = "title")]
     pub purpose: String,
     /// The concrete objectives — what "done" looks like, each independently
     /// checkable. Keep them few and honest.
     #[serde(default)]
+    #[kyyn(markdown)]
     pub objectives: Vec<String>,
     /// Scope, period under review, ground rules, exclusions (Markdown prose).
     #[serde(default)]
+    #[kyyn(markdown)]
     pub notes: String,
 }
 
