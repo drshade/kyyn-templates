@@ -12,6 +12,15 @@
 //! validation is currently the generic layer alone. Add typed, testable
 //! cross-record judgement here (e.g. a `relationship` pointing a page at
 //! itself, or a `supersedes` cycle) when the need arises.
+//!
+//! Iterate a kind's records with
+//! `kyyn_core::schema::custom_records::<MyKind>(entries)` — it routes
+//! paths through the kind's own storage pattern and yields typed records
+//! (`path`, `storage_id`, `value`), so a custom check never re-implements
+//! routing or RON decoding by hand. It skips records that fail to
+//! deserialize DELIBERATELY: the mandatory generic phase owns parse
+//! findings — never report them twice. Likewise, don't re-flag what link
+//! policy already rejects; judge only links whose kind the field allows.
 
 pub use kyyn_core::violation::{Severity, Violation};
 
