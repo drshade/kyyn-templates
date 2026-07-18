@@ -8,6 +8,11 @@ real ones at `kyyn init --template <name>`. Engines pin this repo at a rev;
 `kyyn init` instantiates from the pin, and existing KBs adopt a template's
 vocabulary later as a pack (an ordinary proposal).
 
+Each template commits `schema/Cargo.lock`, `schema/rust-toolchain.toml`, and
+`schema/kyyn.toml`. Together they pin dependency resolution, the exact Rust
+release, and validator protocol v1; the engine records the resolved native
+build identity in every accept receipt.
+
 ## Templates
 
 - **blank** — the minimal governed KB: a charter and the owner's own record.

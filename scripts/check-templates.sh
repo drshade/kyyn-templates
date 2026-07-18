@@ -9,8 +9,8 @@ fail=0
 for manifest in */kyyn-template.ron; do
     t=$(dirname "$manifest")
     echo "== template '$t'"
-    (cd "$t/schema" && cargo test --quiet) || { echo "$t: schema tests failed"; fail=1; continue; }
-    live=$(cd "$t/schema" && echo "Registry" | cargo run --quiet | grep -m1 -o 'schema_hash: "[0-9a-f]*"')
+    (cd "$t/schema" && cargo test --quiet --locked) || { echo "$t: schema tests failed"; fail=1; continue; }
+    live=$(cd "$t/schema" && echo "Registry" | cargo run --quiet --locked | grep -m1 -o 'schema_hash: "[0-9a-f]*"')
     committed=$(grep -m1 -o 'schema_hash: "[0-9a-f]*"' "$t/registry.ron")
     if [ "$live" != "$committed" ]; then
         echo "$t: registry.ron is STALE (committed $committed, sources say $live) — regenerate it"
