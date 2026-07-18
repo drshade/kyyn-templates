@@ -49,10 +49,12 @@ its type plus one entry to the explicit `kinds: [...]` inventory in
 `fn custom(entries: &[(String, String)], systems: &[&str]) -> Vec<Violation>`
 in `validate.rs` and pass it as `custom_validate` to `kyyn_schema!`; generic
 Registry validation still runs first. `systems` is the KB's declared external
-link-system set. Custom checks should skip records they cannot deserialize so
-they do not duplicate generic parse findings. Unsupported representations
-implement the same `KyynType`/`KyynKind` trait manually—do not inspect macro
-expansion or create a second registry declaration.
+link-system set. Iterate a kind with
+`kyyn_core::schema::custom_records::<MyKind>(entries)` so custom checks share
+Registry's routing and typed decoding without duplicating generic parse
+findings. Unsupported representations implement the same
+`KyynType`/`KyynKind` trait manually—do not inspect macro expansion or create
+a second registry declaration.
 
 After an intentional schema edit:
 

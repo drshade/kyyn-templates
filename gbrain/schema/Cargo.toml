@@ -12,13 +12,13 @@ name = "gbrain_schema"
 path = "src/lib.rs"
 
 [dependencies]
-kyyn-core = "0.1.15"
+kyyn-core = "0.1.16"
 serde = { version = "1", features = ["derive"] }
 ron = "0.12"
 chrono = { version = "0.4", features = ["serde"] }
 
 [build-dependencies]
-sha2 = "0.10"
+kyyn-schema-build = "0.1.16"
 
 [dev-dependencies]
 sha2 = "0.10"
