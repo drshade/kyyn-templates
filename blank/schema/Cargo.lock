@@ -345,6 +345,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "kyyn-schema-build"
+version = "0.1.18"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "95f26bb0dfd809012f930c7915b299c358164035db9d593cacf2e588562726f9"
+dependencies = [
+ "sha2",
+]
+
+[[package]]
 name = "kyyn-schema-macros"
 version = "0.1.18"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -587,6 +596,7 @@ version = "0.1.0"
 dependencies = [
  "chrono",
  "kyyn-core",
+ "kyyn-schema-build",
  "ron",
  "serde",
  "sha2",
