@@ -1,6 +1,5 @@
-//! The schema binary — what the engine spawns. One RON `Request` on stdin,
-//! one RON `Response` on stdout; the whole wire lives in
-//! `kyyn_core::protocol`, this crate supplies only its two artifacts.
+//! Native authoring helper for refreshing `registry.ron`. Runtime validation
+//! uses the committed Wasm component exported from the library crate.
 
 #[allow(dead_code)] // the shim crates call main_impl directly
 fn main() {
