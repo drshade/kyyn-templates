@@ -8,10 +8,11 @@ real ones at `kyyn init --template <name>`. Engines pin this repo at a rev;
 `kyyn init` instantiates from the pin, and existing KBs adopt a template's
 vocabulary later as a pack (an ordinary proposal).
 
-Each template commits `schema/Cargo.lock`, `schema/rust-toolchain.toml`, and
-`schema/kyyn.toml`. Together they pin dependency resolution, the exact Rust
-release, and validator protocol v1; the engine records the resolved native
-build identity in every accept receipt.
+Each template commits `schema/Cargo.lock`, `schema/rust-toolchain.toml`,
+`schema/validator.wasm`, and `schema/validator.toml`. Together they pin
+dependency resolution, the exact Rust release, the zero-import
+`kyyn:validator@1` component, and its deterministic Wasmtime execution
+profile. `schema/kyyn.toml` retains the authoring protocol version.
 
 ## Templates
 
@@ -56,15 +57,22 @@ findings. Unsupported representations implement the same
 `KyynType`/`KyynKind` trait manually—do not inspect macro expansion or create
 a second registry declaration.
 
-After an intentional schema edit:
+After an intentional schema edit, use a Kyyn proposal so source, generated
+Registry, lockfile, component, and provenance metadata remain one reviewed
+unit:
 
-1. refresh `registry.ron` and review its structural diff;
-2. run that schema's tests—the reviewed-projection assertion prints the new
+1. stage the source edit, then run
+   `kyyn component build --proposal <id> --kb <path>` (or use schema staging,
+   which performs the same atomic authoring build);
+2. review the `registry.ron`, `schema/validator.toml`, dependency lock, and
+   source diff; the component digest binds the binary artifact;
+3. run that schema's tests—the reviewed-projection assertion prints the new
    digest as its `left` value;
-3. copy that digest into `REVIEWED_REGISTRY_SHA256`, then refresh again because
+4. copy that digest into `REVIEWED_REGISTRY_SHA256`, then rebuild because
    the test constant itself is schema-bearing source;
-4. run `./scripts/check-templates.sh`.
+5. run `./scripts/check-templates.sh`.
 
 In a real KB, stage the schema sources, generated registry and any required
-record migration together on a proposal so accept validates the complete new
-tree against its own schema.
+record migration together. Accept rebuilds source-bound components offline and
+requires byte-for-byte agreement before validating the complete new tree
+against its own schema.
