@@ -3,7 +3,7 @@
         (
             name: "first-party",
             repo: Some("ssh://git@github.com/drshade/kyyn-plugins"),
-            rev: Some("5632d44bbe2459d472ad9b73b4417376758fe5d9"),
+            rev: Some("f35742246e7e985398a42f78f730e1e21a61546b"),
         ),
     ],
     sources: [
