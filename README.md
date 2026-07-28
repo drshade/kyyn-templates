@@ -66,11 +66,14 @@ unit:
    which performs the same atomic authoring build);
 2. review the `registry.ron`, `schema/validator.toml`, dependency lock, and
    source diff; the component digest binds the binary artifact;
-3. run that schema's tests—the reviewed-projection assertion prints the new
-   digest as its `left` value;
-4. copy that digest into `REVIEWED_REGISTRY_SHA256`, then rebuild because
-   the test constant itself is schema-bearing source;
-5. run `./scripts/check-templates.sh`.
+3. run that schema's semantic and round-trip tests;
+4. run `./scripts/check-templates.sh`.
+
+There is deliberately no hand-maintained Registry fingerprint or fixed kind
+count in a template schema. The generated `registry.ron`, source-bound
+component metadata, and accept gate provide the mechanical drift guard; a
+parallel hash constant would go stale on every legitimate on-wire schema
+evolution and cannot be maintained through the agent authoring surface.
 
 In a real KB, stage the schema sources, generated registry and any required
 record migration together. Accept rebuilds source-bound components offline and
