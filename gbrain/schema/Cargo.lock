@@ -596,7 +596,6 @@ dependencies = [
  "kyyn-schema-build",
  "ron",
  "serde",
- "sha2",
  "wit-bindgen",
 ]
 
