@@ -70,7 +70,7 @@ mod tests {
             entry(
                 "facts/relationships/jane-works-at-acme.ron",
                 r#"(id: "jane-works-at-acme", title: "Jane works_at Acme",
-                    from: "entity:jane-doe", to: "entity:acme", verb: WorksAt)"#,
+                    from: "gbrain/entity:jane-doe", to: "gbrain/entity:acme", verb: WorksAt)"#,
             ),
         ];
         let v = validate_entries(&entries);
@@ -91,7 +91,7 @@ mod tests {
             ),
             entry(
                 "facts/relationships/bad.ron",
-                r#"(id: "bad", title: "Bad", from: "take:nope", to: "entity:acme", verb: WorksAt)"#,
+                r#"(id: "bad", title: "Bad", from: "gbrain/take:nope", to: "gbrain/entity:acme", verb: WorksAt)"#,
             ),
         ];
         let v = validate_entries(&entries);

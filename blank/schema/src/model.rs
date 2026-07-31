@@ -12,7 +12,8 @@
 //!
 //! When you add kinds: dates are `chrono::NaiveDate` (serde reads/writes the
 //! exact `YYYY-MM-DD` strings on disk); references are the universal
-//! `kyyn_core::link::Link` type (`[system:]kind:id` strings on disk).
+//! `kyyn_core::link::Link` type (`namespace/kind:id` for KB records, or
+//! `system:kind:id` for external records).
 
 use serde::{Deserialize, Serialize};
 

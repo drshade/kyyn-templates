@@ -6,12 +6,32 @@ use kyyn_core::registry::{Affordance, RoleDecl};
 use crate::model::{Annotation, Charter, Concept, Entity, Media, Relationship, Take, Temporal};
 
 kyyn_core::kyyn_schema! {
-    kinds: [Charter, Entity, Media, Temporal, Annotation, Concept, Relationship, Take],
-    roles: roles(),
-    queries: crate::queries::queries(),
+    namespaces: [
+        "default" => {
+            doc: "The KB's governance and processing context.",
+            kinds: [Charter],
+            roles: title_role(),
+            queries: vec![],
+        },
+        "gbrain" => {
+            doc: "The inter-linked gbrain operational knowledge model.",
+            kinds: [Entity, Media, Temporal, Annotation, Concept, Relationship, Take],
+            roles: knowledge_roles(),
+            queries: crate::queries::queries(),
+        },
+    ],
 }
 
-fn roles() -> Vec<RoleDecl> {
+fn title_role() -> Vec<RoleDecl> {
+    vec![RoleDecl {
+        name: "title".into(),
+        doc: "Names the record — lists, links, briefs.".into(),
+        binds: Affordance::Title,
+        variants: vec![],
+    }]
+}
+
+fn knowledge_roles() -> Vec<RoleDecl> {
     vec![
         RoleDecl {
             name: "title".into(),
@@ -36,13 +56,15 @@ mod tests {
     fn nested_shape_docs_variants_and_roles_flow_from_the_types() {
         let reg = registry();
         let charter = reg
-            .kinds
-            .iter()
-            .find(|kind| kind.name == "charter")
+            .kinds()
+            .find(|kind| kind.name == "default/charter")
             .unwrap();
         assert!(charter.doc.contains("WHY"));
 
-        let entity = reg.kinds.iter().find(|kind| kind.name == "entity").unwrap();
+        let entity = reg
+            .kinds()
+            .find(|kind| kind.name == "gbrain/entity")
+            .unwrap();
         let aliases = entity
             .fields
             .iter()
@@ -69,9 +91,8 @@ mod tests {
         );
 
         let relationship = reg
-            .kinds
-            .iter()
-            .find(|kind| kind.name == "relationship")
+            .kinds()
+            .find(|kind| kind.name == "gbrain/relationship")
             .unwrap();
         let verb = relationship
             .fields

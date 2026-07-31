@@ -12,7 +12,8 @@
 //!
 //! Dates are `chrono::NaiveDate` (serde reads/writes the exact `YYYY-MM-DD`
 //! strings on disk); references are the universal [`Link`] type
-//! (`[system:]kind:id` strings on disk — see `link.rs`).
+//! (`namespace/kind:id` for KB records, or `system:kind:id` for external
+//! records — see `link.rs`).
 
 use chrono::NaiveDate;
 use serde::{Deserialize, Serialize};
@@ -203,7 +204,7 @@ pub struct Temporal {
     pub date: Option<NaiveDate>,
     /// Entities present or involved — typed links to `entity` pages.
     #[serde(default)]
-    #[kyyn(link(allowed = ["entity"]))]
+    #[kyyn(link(allowed = ["gbrain/entity"]))]
     pub attendees: Vec<Link>,
     /// How long it ran (free-form, e.g. `45m`).
     #[serde(default)]
@@ -319,7 +320,13 @@ pub enum LinkVerb {
 
 /// Page kinds accepted by graph-edge and take-subject links. One shared
 /// constant feeds every derived link policy.
-pub const PAGE_KINDS: &[&str] = &["entity", "media", "temporal", "annotation", "concept"];
+pub const PAGE_KINDS: &[&str] = &[
+    "gbrain/entity",
+    "gbrain/media",
+    "gbrain/temporal",
+    "gbrain/annotation",
+    "gbrain/concept",
+];
 
 /// A typed edge between two pages — gbrain's link graph as first-class records.
 /// A kyyn `Link` carries no verb, so the edge itself is a kind: it names the
@@ -443,22 +450,22 @@ mod tests {
         let r = Relationship {
             id: "jane-doe-works-at-acme".into(),
             title: "Jane Doe works_at Acme".into(),
-            from: Link::kb("entity", "jane-doe"),
-            to: Link::kb("entity", "acme"),
+            from: Link::kb("gbrain/entity", "jane-doe"),
+            to: Link::kb("gbrain/entity", "acme"),
             verb: LinkVerb::WorksAt,
             context: "Since 2024.".into(),
         };
         let rser = kyyn_core::ronfmt::to_ron(&r).unwrap();
-        assert!(rser.contains("\"entity:jane-doe\""));
+        assert!(rser.contains("\"gbrain/entity:jane-doe\""));
         assert_eq!(r, ron::from_str::<Relationship>(&rser).unwrap());
 
         // A take defaults everything but the required subject/kind.
         let t: Take = ron::from_str(
-            r#"(id: "acme-cto", title: "Jane is CTO", subject: "entity:jane-doe", kind: Fact)"#,
+            r#"(id: "acme-cto", title: "Jane is CTO", subject: "gbrain/entity:jane-doe", kind: Fact)"#,
         )
         .unwrap();
         assert_eq!(t.kind, TakeKind::Fact);
-        assert_eq!(t.subject, Link::kb("entity", "jane-doe"));
+        assert_eq!(t.subject, Link::kb("gbrain/entity", "jane-doe"));
         assert_eq!(t.confidence, None);
     }
 }

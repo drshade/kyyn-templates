@@ -6,9 +6,14 @@ use kyyn_core::registry::{Affordance, RoleDecl};
 use crate::model::{Charter, SelfContext};
 
 kyyn_core::kyyn_schema! {
-    kinds: [Charter, SelfContext],
-    roles: roles(),
-    queries: crate::queries::queries(),
+    namespaces: [
+        "default" => {
+            doc: "The starter's explicit general-purpose ontology.",
+            kinds: [Charter, SelfContext],
+            roles: roles(),
+            queries: crate::queries::queries(),
+        },
+    ],
 }
 
 fn roles() -> Vec<RoleDecl> {
@@ -36,9 +41,8 @@ mod tests {
     fn docs_and_roles_flow_from_the_types() {
         let reg = registry();
         let charter = reg
-            .kinds
-            .iter()
-            .find(|kind| kind.name == "charter")
+            .kinds()
+            .find(|kind| kind.name == "default/charter")
             .unwrap();
         assert!(charter.doc.contains("WHY"));
         assert_eq!(reg.coherence_errors(), Vec::<String>::new());
