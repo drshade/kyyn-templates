@@ -5,7 +5,7 @@
 (
     template: 1,
     name: "blank",
-    summary: "The minimal governed KB: a charter and the owner's own record.",
+    summary: "The minimal governed KB: an explicit default namespace, empty recipe ledger, charter, and owner record.",
     substitutions: [
         (key: "owner_name", doc: "The owner's display name.", dummy: "Template Owner", files: ["facts/self.ron"]),
         (key: "owner_role", doc: "The owner's role, one line.", dummy: "Template Role", files: ["facts/self.ron"]),

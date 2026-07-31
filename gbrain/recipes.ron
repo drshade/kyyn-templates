@@ -1,0 +1,30 @@
+(
+    format: 1,
+    recipes: [
+        (
+            id: "gbrain-repository",
+            revisions: [
+                (
+                    sha256: "6d7c217dd4748123c3a29bff77cab366e646d54f93235d07395df608f6b716ce",
+                    title: "Gbrain repository",
+                    purpose: "Translate relevant gbrain specification changes into the local operational knowledge model.",
+                    instructions: "Read the changed repository evidence literally. Update only knowledge supported by the source, preserve qualified links, and do not copy remote structure blindly.",
+                    sources: [
+                        "git-repo",
+                    ],
+                    target_namespaces: [
+                        "gbrain",
+                    ],
+                ),
+            ],
+            events: [
+                (
+                    at: "2026-07-31T00:00:00Z",
+                    proposal_uid: "template-seed",
+                    revision: "6d7c217dd4748123c3a29bff77cab366e646d54f93235d07395df608f6b716ce",
+                    state: Active,
+                ),
+            ],
+        ),
+    ],
+)

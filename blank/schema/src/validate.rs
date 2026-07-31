@@ -70,7 +70,7 @@ mod tests {
             entry("facts/self.ron", "(name: "),
             entry(
                 "facts/charter.ron",
-                r#"(purpose: "P", notes: "see [[self]] and [[todo:ghost]]")"#,
+                r#"(purpose: "P", notes: "see [[default/self]] and [[default/todo:ghost]]")"#,
             ),
         ];
         let v = validate_entries(&entries);

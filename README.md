@@ -16,12 +16,16 @@ profile. `schema/kyyn.toml` retains the authoring protocol version.
 
 ## Templates
 
-- **blank** — the minimal governed KB: a charter and the owner's own record.
-  The default for `kyyn init`.
+- **blank** — the minimal governed KB: an explicit `default` namespace, an
+  empty recipe ledger, a charter and the owner's own record. The default for
+  `kyyn init`.
 - **gbrain** — a gbrain-style operational knowledge brain: five primitive
-  page kinds (entity / media / temporal / annotation / concept), typed
-  `relationship` edges over the gbrain link verbs, and `take` claims with
-  provenance. Compiled truth above the line, an append-only timeline below.
+  page kinds in the `gbrain` namespace (entity / media / temporal /
+  annotation / concept), typed `relationship` edges over the gbrain link
+  verbs, and `take` claims with provenance. Its charter remains in `default`;
+  the active `gbrain-repository` recipe explicitly consumes the declared
+  repository source and may update only `gbrain`. Compiled truth above the
+  line, an append-only timeline below.
 
 ## Maintaining a template
 
@@ -45,8 +49,9 @@ or an explicit link policy. Rust types, serde defaults and doc comments flow
 into Registry without being restated.
 
 Adding a field normally touches only its Rust declaration. Adding a kind adds
-its type plus one entry to the explicit `kinds: [...]` inventory in
-`registry.rs`. For a domain invariant, write
+its type plus one entry to the appropriate explicit namespace's
+`kinds: [...]` inventory in `registry.rs`. Namespaces organize one ontology;
+they are not permissions, imports, or separate validators. For a domain invariant, write
 `fn custom(entries: &[(String, String)], systems: &[&str]) -> Vec<Violation>`
 in `validate.rs` and pass it as `custom_validate` to `kyyn_schema!`; generic
 Registry validation still runs first. `systems` is the KB's declared external

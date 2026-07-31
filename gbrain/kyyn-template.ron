@@ -4,6 +4,6 @@
 (
     template: 1,
     name: "gbrain",
-    summary: "A gbrain-style operational knowledge brain: entity/media/temporal/annotation/concept pages, typed relationship edges, and takes with provenance.",
+    summary: "A namespaced gbrain-style operational knowledge brain with a reviewed repository-processing recipe, typed relationship edges, and provenance-bearing takes.",
     substitutions: [],
 )
