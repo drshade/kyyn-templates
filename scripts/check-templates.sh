@@ -6,9 +6,45 @@
 set -euo pipefail
 cd "$(dirname "$0")/.."
 fail=0
+expected_connector_rev=
 for manifest in */kyyn-template.ron; do
     t=$(dirname "$manifest")
     echo "== template '$t'"
+    if [ ! -f "$t/connectors.ron" ] || [ ! -f "$t/sources.ron" ]; then
+        echo "$t: directional connector/source manifests are missing"
+        fail=1
+        continue
+    fi
+    if rg -n '\b(taps|tap|plugin|plugins)\b|kyyn-plugins|tap:' \
+        "$t/connectors.ron" "$t/sources.ron"; then
+        echo "$t: retired tap/plugin vocabulary remains in directional manifests"
+        fail=1
+        continue
+    fi
+    if rg -n '(^|[^[:alnum:]_])sources[[:space:]]*:' "$t/connectors.ron" \
+        || rg -n '(^|[^[:alnum:]_])connectors[[:space:]]*:' "$t/sources.ron"; then
+        echo "$t: repository pins and source instances cross manifest ownership"
+        fail=1
+        continue
+    fi
+    if ! grep -Fq 'repo: Some("ssh://git@github.com/drshade/kyyn-connectors")' "$t/connectors.ron"; then
+        echo "$t: first-party connector repository URL is not canonical"
+        fail=1
+        continue
+    fi
+    connector_rev=$(sed -n 's/.*rev: Some("\([0-9a-f]\{40\}\)").*/\1/p' "$t/connectors.ron")
+    if [[ ! "$connector_rev" =~ ^[0-9a-f]{40}$ ]]; then
+        echo "$t: connector repository is not pinned exactly once to a full commit"
+        fail=1
+        continue
+    fi
+    if [ -z "$expected_connector_rev" ]; then
+        expected_connector_rev=$connector_rev
+    elif [ "$connector_rev" != "$expected_connector_rev" ]; then
+        echo "$t: first-party connector revision drifts from the other templates"
+        fail=1
+        continue
+    fi
     (cd "$t/schema" && cargo test --quiet --locked) || { echo "$t: schema tests failed"; fail=1; continue; }
     (cd "$t/schema" && cargo build --quiet --locked --release --target wasm32-unknown-unknown --lib) \
         || { echo "$t: Wasm validator build failed"; fail=1; continue; }

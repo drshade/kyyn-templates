@@ -1,20 +1,29 @@
-# Every template is a valid KB fragment: schema tests + registry freshness
-# per directory (ADR 0007's deferred CI, instituted by ADR 0010).
+# Every template is a valid KB fragment: directional manifests, schema tests,
+# and registry freshness. Hosted execution is an explicit metered fallback.
 name: check
 on:
+  workflow_dispatch:
+    inputs:
+      hosted:
+        description: Use a metered GitHub-hosted runner as a manual fallback
+        required: false
+        type: boolean
+        default: false
   pull_request:
   push:
     branches: [main]
 jobs:
   check:
-    runs-on: ubuntu-latest
+    runs-on: ${{ fromJSON(inputs.hosted && '["ubuntu-latest"]' || '["self-hosted","linux","x64","kyyn-templates-ci"]') }}
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
       - name: Install the pinned toolchain (rust-toolchain.toml)
         run: rustup show active-toolchain
       - uses: Swatinem/rust-cache@42dc69e1aa15d09112580998cf2ef0119e2e91ae # v2
+        if: ${{ inputs.hosted == true }}
         with:
           workspaces: |
             blank/schema
             gbrain/schema
-      - run: ./scripts/check-templates.sh
+      - run: make check
