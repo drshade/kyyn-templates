@@ -1,0 +1,9 @@
+(
+    connectors: [
+        (
+            name: "first-party",
+            repo: Some("ssh://git@github.com/drshade/kyyn-connectors"),
+            rev: Some("537f62d9c09a6bc9767ff1e3d87343c75da73551"),
+        ),
+    ],
+)

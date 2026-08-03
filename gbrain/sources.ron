@@ -1,15 +1,8 @@
 (
-    taps: [
-        (
-            name: "first-party",
-            repo: Some("ssh://git@github.com/drshade/kyyn-plugins"),
-            rev: Some("5c597fdae9875d04942bc1574534814b23c6f17f"),
-        ),
-    ],
     sources: [
         (
             name: "git-repo",
-            plugin: "tap:first-party#git-repo",
+            connector: "connector:first-party#git-repo",
             config: Some({
                 "url": "https://github.com/garrytan/gbrain",
             }),

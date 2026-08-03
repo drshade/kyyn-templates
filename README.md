@@ -2,9 +2,10 @@
 
 KB templates for [kyyn](https://github.com/drshade/kyyn) (ADR 0007). Each
 top-level directory holding a `kyyn-template.ron` manifest is a template: a
-**valid, runnable KB** — schema crate, committed registry, charter, sources
-skeleton — whose identity values are canonical dummy literals, swapped for
-real ones at `kyyn init --template <name>`. Engines pin this repo at a rev;
+**valid, runnable KB** — schema crate, committed registry, charter, immutable
+connector-repository pins, and directional source skeleton — whose identity
+values are canonical dummy literals, swapped for real ones at
+`kyyn init --template <name>`. Engines pin this repo at a rev;
 `kyyn init` instantiates from the pin, and existing KBs adopt a template's
 vocabulary later as a pack (an ordinary proposal).
 
@@ -37,6 +38,11 @@ run `./scripts/refresh-registry.sh <template>` without requiring a local KB
 profile (or use `kyyn --kb <mount> registry --from-sources` for an already
 registered mount). Keep every dummy identity declared in its manifest —
 nothing else in a tree may be parameterized.
+
+Each template keeps immutable connector repository pins in `connectors.ron`
+and configured source instances in `sources.ron`. Source references use only
+`connector:<repository>#<connector>`; repository pins never live in the
+directional source manifest.
 
 ## Evolving a schema
 
