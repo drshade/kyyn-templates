@@ -62,7 +62,8 @@ for manifest in */kyyn-template.ron; do
         fail=1
         continue
     fi
-    live=$(cd "$t/schema" && echo "Registry" | cargo run --quiet --locked | grep -m1 -o 'schema_hash: "[0-9a-f]*"')
+    live=$(cd "$t/schema" && echo "Registry" | cargo run --quiet --locked \
+        | grep -o 'schema_hash: "[0-9a-f]*"' | sed -n '1p')
     committed=$(grep -m1 -o 'schema_hash: "[0-9a-f]*"' "$t/registry.ron")
     if [ "$live" != "$committed" ]; then
         echo "$t: registry.ron is STALE (committed $committed, sources say $live) — regenerate it"
