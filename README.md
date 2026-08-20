@@ -57,14 +57,18 @@ into Registry without being restated.
 Adding a field normally touches only its Rust declaration. Adding a kind adds
 its type plus one entry to the appropriate explicit namespace's
 `kinds: [...]` inventory in `registry.rs`. Namespaces organize one ontology;
-they are not permissions, imports, or separate validators. For a domain invariant, write
+they are not permissions, imports, or separate validators. For an endpoint-tree
+domain invariant, write
 `fn custom(entries: &[(String, String)], systems: &[&str]) -> Vec<Violation>`
 in `validate.rs` and pass it as `custom_validate` to `kyyn_schema!`; generic
 Registry validation still runs first. `systems` is the KB's declared external
 link-system set. Iterate a kind with
 `kyyn_core::schema::custom_records::<MyKind>(entries)` so custom checks share
 Registry's routing and typed decoding without duplicating generic parse
-findings. Unsupported representations implement the same
+findings. For a rule about a change rather than only its final state, add it to
+`validate_transition`: its `kyyn_core::validator::ValidationContext` carries
+the previous and candidate snapshots plus the exact engine-verified authority
+for each final field transition. Unsupported representations implement the same
 `KyynType`/`KyynKind` trait manually—do not inspect macro expansion or create
 a second registry declaration.
 

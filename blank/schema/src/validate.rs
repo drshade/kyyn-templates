@@ -38,6 +38,13 @@ pub fn validate_entries_with(entries: &[(String, String)], systems: &[&str]) -> 
     crate::registry::validate_entries_with(entries, systems)
 }
 
+/// Validate business rules that depend on how knowledge changed. The engine
+/// supplies the previous tree and exact, receipt-verified authority for each
+/// final transition; blank ships no transition-specific policy.
+pub fn validate_transition(_context: &kyyn_core::validator::ValidationContext) -> Vec<Violation> {
+    Vec::new()
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
