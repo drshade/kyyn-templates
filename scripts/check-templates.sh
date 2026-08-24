@@ -7,6 +7,7 @@ set -euo pipefail
 cd "$(dirname "$0")/.."
 fail=0
 expected_connector_rev=
+expected_sdk_version=
 for manifest in */kyyn-template.ron; do
     t=$(dirname "$manifest")
     echo "== template '$t'"
@@ -42,6 +43,25 @@ for manifest in */kyyn-template.ron; do
         expected_connector_rev=$connector_rev
     elif [ "$connector_rev" != "$expected_connector_rev" ]; then
         echo "$t: first-party connector revision drifts from the other templates"
+        fail=1
+        continue
+    fi
+    core_version=$(sed -n 's/^[[:space:]]*kyyn-core[[:space:]]*=[[:space:]]*"=\([^"]*\)"[[:space:]]*$/\1/p' "$t/schema/Cargo.toml")
+    build_version=$(sed -n 's/^[[:space:]]*kyyn-schema-build[[:space:]]*=[[:space:]]*"=\([^"]*\)"[[:space:]]*$/\1/p' "$t/schema/Cargo.toml")
+    if [ -z "$core_version" ] || [ -z "$build_version" ]; then
+        echo "$t: schema SDK dependencies must use exact =version requirements"
+        fail=1
+        continue
+    fi
+    if [ "$core_version" != "$build_version" ]; then
+        echo "$t: kyyn-core and kyyn-schema-build versions drift"
+        fail=1
+        continue
+    fi
+    if [ -z "$expected_sdk_version" ]; then
+        expected_sdk_version=$core_version
+    elif [ "$core_version" != "$expected_sdk_version" ]; then
+        echo "$t: schema SDK version drifts from the other templates"
         fail=1
         continue
     fi
