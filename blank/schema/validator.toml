@@ -1,15 +1,15 @@
 format = 1
 component = "schema/validator.wasm"
-sha256 = "1c576ea01180f615052d85677e24687e5ba8679f15a673920b374fd3b211dc1f"
+sha256 = "df00449330c3a4acd101241ebf620af724813aa889e9690a8964ee800daf7f6a"
 world = "kyyn:validator/validator@1.0.0"
 execution_profile = "kyyn-validator-deterministic-1"
-snapshot_format = 1
+validation_context_format = 1
 registry_format = "kyyn-registry-ron-1"
 trust = "source-bound"
 
 [source]
-source_sha256 = "17d1d07bfc2667a2facdb16b8a92d8474913c681e1e74c574be67b080ae97093"
-lockfile_sha256 = "3959a5ce316688d5ec6676f3266de51f500813b29c52549037ae9b6b80c2db83"
+source_sha256 = "2205e97e1ef093f13c182410a145fa3527551da585e89df231f6bbfcfc138750"
+lockfile_sha256 = "11472b16c0b5b48226391179a345b3d73372a10ebd07add064cefaa51b5794f2"
 declared_toolchain = "1.97.0"
 target = "wasm32-unknown-unknown"
 cargo_profile = "release"

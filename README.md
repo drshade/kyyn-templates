@@ -14,6 +14,9 @@ Each template commits `schema/Cargo.lock`, `schema/rust-toolchain.toml`,
 dependency resolution, the exact Rust release, the zero-import
 `kyyn:validator@1` component, and its deterministic Wasmtime execution
 profile. `schema/kyyn.toml` retains the authoring protocol version.
+Every template also pins `kyyn-core` and `kyyn-schema-build` with exact
+`=version` requirements, and all first-party templates move those SDK versions
+together; the repository gate refuses relaxed or drifting requirements.
 
 ## Templates
 
