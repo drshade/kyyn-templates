@@ -3,7 +3,7 @@
         (
             name: "first-party",
             repo: Some("ssh://git@github.com/drshade/kyyn-connectors"),
-            rev: Some("bf389f36c771749687f1792c960fe5f65c5c984f"),
+            rev: Some("490bd02d14c60701ea3620fb30bf9b4695e5352a"),
         ),
     ],
 )
